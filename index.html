@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Météo</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(-45deg, #1f4068, #162447, #1a1a2e, #0f4c75);
+            --card-bg: rgba(255, 255, 255, 0.07);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-sub: #b0b0b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: gradientBg 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        /* Animation du fond d'écran */
+        @keyframes gradientBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 380px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 30px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Éléments Météo --- */
+        .search-box {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 5px 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            outline: none;
+            color: white;
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-sub);
+        }
+
+        .location {
+            font-size: 1.6rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Animation de l'icône Météo --- */
+        .weather-icon-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sun {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ffcd3c, #ff9233);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(255, 146, 51, 0.6);
+            animation: pulseSun 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseSun {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 146, 51, 0.4); }
+            100% { transform: scale(1.1); box-shadow: 0 0 40px rgba(255, 146, 51, 0.8); }
+        }
+
+        .cloud {
+            position: absolute;
+            bottom: 20px;
+            right: 15px;
+            width: 65px;
+            height: 25px;
+            background: rgba(240, 240, 240, 0.9);
+            border-radius: 20px;
+            animation: floatCloud 3s ease-in-out infinite alternate;
+        }
+
+        .cloud::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 10px;
+            width: 30px;
+            height: 30px;
+            background: rgba(240, 240, 240, 0.9);
+            border-radius: 50%;
+        }
+
+        .cloud::after {
+            content: '';
+            position: absolute;
+            top: -25px;
+            right: 13px;
+            width: 35px;
+            height: 35px;
+            background: rgba(240, 240, 240, 0.9);
+            border-radius: 50%;
+        }
+
+        @keyframes floatCloud {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(-5px) translateX(5px); }
+        }
+
+        /* --- Température et Infos --- */
+        .temperature {
+            font-size: 4.5rem;
+            font-weight: 200;
+            margin-bottom: 5px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .temperature::after {
+            content: '°';
+            position: absolute;
+            top: 10px;
+            right: -20px;
+            font-size: 2.5rem;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: var(--text-sub);
+            text-transform: capitalize;
+            margin-bottom: 35px;
+        }
+
+        /* --- Section "Widget Interne" --- */
+        .widget-preview {
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid var(--card-border);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .info-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="search-box">
+            <input type="text" id="city-input" placeholder="Rechercher une ville..." value="Paris">
+        </div>
+
+        <div class="location" id="city-name">Paris</div>
+        
+        <div class="weather-icon-wrapper">
+            <div class="sun"></div>
+            <div class="cloud"></div>
+        </div>
+
+        <div class="temperature" id="temp-display">21</div>
+        <div class="description" id="desc-display">Éclaircies</div>
+
+        <!-- Le Widget Météo Minimaliste Intégré -->
+        <div class="widget-preview">
+            <div class="info-block">
+                <span class="info-label">Humidité</span>
+                <span class="info-value" id="humidity-display">45%</span>
+            </div>
+            <div class="info-block">
+                <span class="info-label">Vent</span>
+                <span class="info-value" id="wind-display">12 km/h</span>
+            </div>
+            <div class="info-block">
+                <span class="info-label">Ressenti</span>
+                <span class="info-value" id="feel-display">23°C</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulation de données Météo avec animation au changement
+        const citiesData = {
+            paris: { name: "Paris", temp: 21, desc: "Éclaircies", humidity: "45%", wind: "12 km/h", feel: "23°C" },
+            marseille: { name: "Marseille", temp: 27, desc: "Ensoleillé", humidity: "30%", wind: "25 km/h", feel: "29°C" },
+            lyon: { name: "Lyon", temp: 19, desc: "Nuageux", humidity: "60%", wind: "10 km/h", feel: "19°C" }
+        };
+
+        const input = document.getElementById('city-input');
+        
+        input.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                const cityKey = input.value.toLowerCase().trim();
+                if (citiesData[cityKey]) {
+                    updateWeather(citiesData[cityKey]);
+                } else {
+                    // Météo générée aléatoirement si la ville n'est pas dans le dico
+                    updateWeather({
+                        name: input.value,
+                        temp: Math.floor(Math.random() * 15) + 15,
+                        desc: "Léger voile nuageux",
+                        humidity: Math.floor(Math.random() * 40) + 40 + "%",
+                        wind: Math.floor(Math.random() * 20) + 5 + " km/h",
+                        feel: Math.floor(Math.random() * 15) + 15 + "°C"
+                    });
+                }
+            }
+        });
+
+        function updateWeather(data) {
+            const container = document.querySelector('.app-container');
+            
+            // Micro-animation de transition
+            container.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            container.style.opacity = '0.5';
+            container.style.transform = 'scale(0.98)';
+
+            setTimeout(() => {
+                document.getElementById('city-name').innerText = data.name;
+                document.getElementById('temp-display').innerText = data.temp;
+                document.getElementById('desc-display').innerText = data.desc;
+                document.getElementById('humidity-display').innerText = data.humidity;
+                document.getElementById('wind-display').innerText = data.wind;
+                document.getElementById('feel-display').innerText = data.feel;
+                
+                container.style.opacity = '1';
+                container.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        // Enregistrement du Service Worker externe (sw.js)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker enregistré avec succès !', reg))
+                    .catch(err => console.log('Erreur SW:', err));
+            });
+        }
+    </script>
+</body>
+  </html>
