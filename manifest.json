@@ -1,0 +1,33 @@
+{
+  "name": "Aura Météo Minimaliste",
+  "short_name": "AuraMétéo",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Météo Marseille",
+      "short_name": "Marseille",
+      "description": "Voir la météo à Marseille immédiatement",
+      "url": "index.html?city=marseille",
+      "icons": [{ "src": "icon-512.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "Météo Paris",
+      "short_name": "Paris",
+      "description": "Voir la météo à Paris immédiatement",
+      "url": "index.html?city=paris",
+      "icons": [{ "src": "icon-512.png", "sizes": "512x512" }]
+    }
+  ]
+}
